@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Jaldi:wght@400;700&display=swap');
+
+:root {
+  --darkpurple: #3e2e88;
+  --lightpurple: #6e4deb;
+}
+
+.App{
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-transform: capitalize;
+  transition: all .2s linear;
+  background:  #0c0f1f;
+  color: white;
+  font-family: 'Jaldi', sans-serif;
+  line-height: 1.5;
+}
+
+.wexo-code-challenge > .row {
+  padding: 20px 0;
+  display: flex;
+  position: relative;
+}
+
+/* 
+.wexo-code-challenge > .row {
+  color: white;
+  padding: 20px 0; 
+  margin-left: 3px;
+  margin-bottom: 30px;
+  white-space: nowrap;
+  display: inline-block;
+  float: none;
+}
+*/
+
+/* Custom scrollbar */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(73, 73, 73);
+}
+
+

@@ -1,0 +1,97 @@
+/* Handles the items (movies and series) */
+
+.item-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 80px auto 0;
+    overflow-x: auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.item-card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    margin: 20px;
+}
+
+.item-title {
+    font-size: 1.1rem;
+    margin-top: 0.25rem;
+}
+
+.item img {
+    max-width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.genre-search-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: 25px;
+}
+
+.genre-filter {
+    padding: 10px;
+    display: inline-block;
+}
+
+.genre-filter label {
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.genre-filter select {
+    padding: 5px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+.load-btn {
+    border: 1px solid;
+    border-radius: 5px;
+    margin-left: 20px;
+    font-size: 1.1rem;
+}
+
+.search-box {
+    padding: 10px;
+    width: 600px;
+    justify-content: flex-end;
+}
+
+.item-image {
+    width: 200px;
+    height: auto;
+}
+
+.amount-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+    .item {
+        flex: 0 0 calc(50% - 20px);
+    }
+
+    .genre-filter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .genre-filter label {
+        margin-bottom: 5px;
+    }
+}
