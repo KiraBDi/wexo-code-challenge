@@ -11,6 +11,8 @@ import ThrillerImage from '../../img/Thriller.png';
 import DramaImage from '../../img/Drama.png';
 import HorrorImage from '../../img/Horror.png';
 import RomanceImage from '../../img/Romance.png';
+import NotFoundImage from '../../img/notfound.png';
+
 
 function Movies({ data }) {
 
@@ -77,9 +79,11 @@ function Movies({ data }) {
             case 'Børnefilm':
                 return ChildrenImage;
             default:
-                return 'notfound.png';
+                return NotFoundImage;
         }
     }
+    
+    
 
     const filteredMovies = selectedGenre === 'All'
         ? movies.filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()))

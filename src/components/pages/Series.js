@@ -1,4 +1,5 @@
 import React, {useEffect, useState } from 'react';
+import {Link} from 'react-router-dom';
 import SearchBox from '../SearchBox';
 import './Data.css';
 import ChildrenShowImage from '../../img/childrenShow.png';
@@ -7,6 +8,7 @@ import DanishSHowImage from '../../img/danishShow.png';
 import ChristmasShowImage from '../../img/christmasShow.png';
 import DramaShowImage from '../../img/dramaShow.png';
 import CrimeShowImage from '../../img/crimeShow.png';
+import NotFoundImage from '../../img/notfound.png';
 
 
 function Series ({data}) {
@@ -62,7 +64,7 @@ function Series ({data}) {
             case 'Drama shows':
                 return DramaShowImage;
             default:
-                return 'notfound.png';
+                return NotFoundImage;
         }
     }
 
@@ -74,6 +76,11 @@ function Series ({data}) {
             tag.plprogram$title.toLowerCase().includes(selectedGenre.toLowerCase())
         ) && serie.title.toLowerCase().includes(searchValue.toLowerCase())
     );
+
+    function extractSerieId(serieUrl) {
+        const parts = serieUrl.split('/');
+        return parts[parts.length - 1]; // Assuming serieId is the last part of the URL
+    }
 
     return (
         <div className='item-container'>
@@ -97,7 +104,9 @@ function Series ({data}) {
             <div className='item-card'>
             {filteredSeries.slice(0, visibleSeries).map((serie, index) => (
                 <div key={index} className='item'>
-                    <img className='item-image' src={getGenreImage(selectedGenre)}/>
+                    <Link to={`/Serie/${extractSerieId(serie.id)}`}>
+                        <img className='item-image' src={getGenreImage(selectedGenre)} alt="Show"/>
+                    </Link>
                     <h6 className='item-title'>{serie.title}</h6>
                 </div>
             ))}
