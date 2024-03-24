@@ -73,13 +73,20 @@ function Series({ data }) {
     }
 
     const filteredSeries = selectedGenre === 'All'
-        ? series.filter(serie =>
-            serie.title.toLowerCase().includes(searchValue.toLowerCase()))
-        : series.filter(serie =>
-            serie.plprogram$tags.some(tag =>
-                tag.plprogram$title.toLowerCase().includes(selectedGenre.toLowerCase())
-            ) && serie.title.toLowerCase().includes(searchValue.toLowerCase())
+    ? series.filter(serie => {
+        console.log('Serie:', serie);
+        return serie.title.toLowerCase().includes(searchValue.toLowerCase());
+    })
+    : series.filter(serie => {
+        console.log('Serie:', serie);
+        return (
+            serie.plprogram$tags?.some(tag => {
+                console.log('Tag:', tag);
+                return tag.plprogram$title.toLowerCase().includes(selectedGenre.toLowerCase());
+            }) && serie.title.toLowerCase().includes(searchValue.toLowerCase())
         );
+    });
+
 
     function extractSerieId(serieUrl) {
         const parts = serieUrl.split('/');

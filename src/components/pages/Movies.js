@@ -6,11 +6,10 @@ import SearchBox from '../SearchBox';
 import ActionImage from '../../img/Action.png'
 import AnimationImage from '../../img/Animation.png';
 import ChildrenImage from '../../img/Children.png';
-import SciFiImage from '../../img/Science fiction.png';
 import ThrillerImage from '../../img/Thriller.png';
 import DramaImage from '../../img/Drama.png';
 import HorrorImage from '../../img/Horror.png';
-import RomanceImage from '../../img/Romance.png';
+import ComedyImage from '../../img/comedyMovie.png';
 import NotFoundImage from '../../img/notfound.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
@@ -48,10 +47,13 @@ function Movies({ data }) {
                 throw new Error('Failed to fetch data');
             }
             const data = await response.json();
+            console.log('Fetched data: ', data);
             const filteredData = data.entries.map(movie => ({
                 id: movie.id,
                 title: movie.title,
+                genre: extractGenre(movie.plprogram$tags),
             }))
+            console.log('Filtered data: ', filteredData);
             setMovies(filteredData || []);
         } catch (error) {
             console.error('Error fetching movies data: ', error);
@@ -64,6 +66,7 @@ function Movies({ data }) {
 
     const handleGenreChange = (e) => {
         setSelectedGenre(e.target.value);
+        setSearchValue('');
     }
 
     const getGenreImage = (genre) => {
@@ -72,17 +75,15 @@ function Movies({ data }) {
                 return ActionImage;
             case 'Animation':
                 return AnimationImage;
-            case 'Science Fiction':
-                return SciFiImage;
-            case 'Gyser':
+            case 'Horror':
                 return HorrorImage;
             case 'Drama':
                 return DramaImage;
-            case 'Romantik':
-                return RomanceImage;
+            case 'Comedy':
+                return ComedyImage;
             case 'Thriller':
                 return ThrillerImage;
-            case 'Børnefilm':
+            case 'Kids movies':
                 return ChildrenImage;
             default:
                 return NotFoundImage;
@@ -95,17 +96,25 @@ function Movies({ data }) {
         return parts[parts.length - 1];
     }
 
+    const extractGenre = (tags) => {
+        if (!tags || tags.length === 0) {
+            return undefined;
+        }
+        const genreTag = tags.find(tag => tag.plprogram$scheme === "genre");
+        return genreTag ? genreTag.plprogram$title : undefined;
+    };
+    
+
     const filteredMovies = selectedGenre === 'All'
     ? movies.filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()))
-    : movies.filter(movie => movie.plprogram$tags && movie.plprogram$tags.some(tag => tag.plprogram$title === selectedGenre))
-        .filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()));
-
+    : movies.filter(movie =>
+        movie.genre?.toLowerCase() === selectedGenre.toLowerCase()
+    );
 
 
     /* This sections is responsible for rendering af list of movies 
     with the possibilty of filtering based on genre.
     You can also search for a specific movie and save the movie to a watchlist */
-
     return (
         <div className='item-container'>
             <div className='genre-search-container'>
@@ -115,12 +124,11 @@ function Movies({ data }) {
                         <option value='All'>All</option>
                         <option value='Action'>Action</option>
                         <option value='Animation'>Animation</option>
-                        <option value='Science Fiction'>Science Fiction</option>
-                        <option value='Gyser'>Horror</option>
+                        <option value='Horror'>Horror</option>
                         <option value='Drama'>Drama</option>
-                        <option value='Romantik'>Romance</option>
+                        <option value='Comedy'>Comedy</option>
                         <option value='Thriller'>Thriller</option>
-                        <option value='Børnefilm'>Children</option>
+                        <option value='Kids movies'>Children</option>
                     </select>
                 </div>
                 <div className='search-box'>
@@ -153,7 +161,7 @@ function Movies({ data }) {
                 ))}
             </div>
             <div className='amount-button'>
-                <p className='item-amount'>Number of series available: {filteredMovies.length}</p>
+                <p className='item-amount'>Number of movies available: {filteredMovies.length}</p>
                 {visibleMovies < movies.length && (
                     <button className='load-btn' onClick={loadMore}>Load More</button>
                 )}
