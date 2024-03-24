@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import {Link} from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { WatchListContext } from '../context/WatchListContext';
 import './Data.css';
 import SearchBox from '../SearchBox';
-import MovieDetail from './MovieDetail';
 import ActionImage from '../../img/Action.png'
 import AnimationImage from '../../img/Animation.png';
 import ChildrenImage from '../../img/Children.png';
@@ -12,10 +12,13 @@ import DramaImage from '../../img/Drama.png';
 import HorrorImage from '../../img/Horror.png';
 import RomanceImage from '../../img/Romance.png';
 import NotFoundImage from '../../img/notfound.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 
 
 function Movies({ data }) {
-
+    const { addToWatchList, removeFromWatchList, watchList } = useContext(WatchListContext);
     const [visibleMovies, setVisibleMovies] = useState(4);
     const [movies, setMovies] = useState([]);
     const [selectedGenre, setSelectedGenre] = useState('All');
@@ -34,7 +37,7 @@ function Movies({ data }) {
     and if not, then fetch the requested genre */
 
     const fetchData = async () => {
-        let API_URL_MOVIES = "https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas?form=json&lang=da&byProgramType=movie";
+        let API_URL_MOVIES = "https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas?form=json&lang=en&byProgramType=movie";
         if (selectedGenre !== 'All') {
             API_URL_MOVIES += `&byTags=genre:${selectedGenre}`;
         }
@@ -85,7 +88,7 @@ function Movies({ data }) {
                 return NotFoundImage;
         }
     }
-    
+
     /* Extracts the numeric part of the id */
     const extractMovieId = (id) => {
         const parts = id.split('/');
@@ -93,10 +96,15 @@ function Movies({ data }) {
     }
 
     const filteredMovies = selectedGenre === 'All'
-        ? movies.filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()))
-        : movies.filter(movie => movie.plprogram$tags.some(tag => tag.plprogram$title === selectedGenre))
-            .filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()));
+    ? movies.filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()))
+    : movies.filter(movie => movie.plprogram$tags && movie.plprogram$tags.some(tag => tag.plprogram$title === selectedGenre))
+        .filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()));
 
+
+
+    /* This sections is responsible for rendering af list of movies 
+    with the possibilty of filtering based on genre.
+    You can also search for a specific movie and save the movie to a watchlist */
 
     return (
         <div className='item-container'>
@@ -123,9 +131,24 @@ function Movies({ data }) {
                 {filteredMovies.slice(0, visibleMovies).map((movie, index) => (
                     <div key={index} className='item'>
                         <Link to={`/Movie/${extractMovieId(movie.id)}`}>
-                        <img className='item-image' src={getGenreImage(selectedGenre)} alt={selectedGenre} />
+                            <img className='item-image' src={getGenreImage(selectedGenre)} alt={selectedGenre} />
                         </Link>
                         <h6 className='item-title'>{movie.title}</h6>
+                        {/* If the heart is solid, the movie is in the watchlist and can be removed */}
+                        {watchList.some(item => item.id === movie.id) ? (
+                            <FontAwesomeIcon
+                                icon={solidHeart}
+                                className='heart-icon'
+                                onClick={() => removeFromWatchList(movie.id)}
+                            />
+                        ) : (
+                            //If the heart is not solid, the movie can be added to the watchlist
+                            <FontAwesomeIcon
+                                icon={regularHeart}
+                                className='heart-icon'
+                                onClick={() => addToWatchList(movie)}
+                            />
+                        )}
                     </div>
                 ))}
             </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './Details.css';
 import ShowImage from '../../img/show.png';
-import NotFoundImg from '../../img/notfound.png';
 
 function SerieDetails() {
     const { serieId } = useParams();
@@ -12,7 +11,7 @@ function SerieDetails() {
         console.log("Serie ID: ", serieId);
         const fetchSerieDetails = async () => {
             try {
-                const response = await fetch(`https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas/?form=json&lang=da&bySeriesId=${serieId}&fields=title,description,plprogram$credits`);
+                const response = await fetch(`https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas/?form=json&lang=en&bySeriesId=${serieId}&fields=title,description,plprogram$credits`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch serie details');
                 }
@@ -66,7 +65,7 @@ function SerieDetails() {
             <div className='img-description-container'>
                 <img src={ShowImage} alt='show' className='img'/>
                 <div>
-                    <h4>Description</h4>
+                    <h4 className='description-title'>Description</h4>
                     <p className='description'>{description}</p>
                 </div>
             </div>

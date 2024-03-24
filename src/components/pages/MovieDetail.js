@@ -20,40 +20,45 @@ function MovieDetail() {
                     });
                     return;
                 }
-                const response = await fetch(`https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas/${movieId}?form=json&fields=title,description,plprogram$credits&lang=da`);
+                const response = await fetch(`https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas/${movieId}?form=json&fields=title,description,plprogram$credits&lang=en`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch movie details');
                 }
                 const data = await response.json();
-                setMovieDetails(data);
+                setMovieDetails({
+                    title: data.title,
+                    description: data.description,
+                    credits: data.plprogram$credits,
+
+                });
             } catch (error) {
                 console.error('Error fetching movie details: ', error);
             }
         };
 
         fetchMovieDetails();
-    }, [movieId]);
+    }, [movieId]); 
 
     if (!movieDetails) {
         return <div>Loading...</div>;
     }
 
-    const { title, description, plprogram$credits } = movieDetails;
+    const { title, description, credits } = movieDetails;
 
     return (
         <div className='details-container'>
-            <h1>Title: {title}</h1>
+            <h1>{title}</h1>
             <div className='img-description-container'>
                 <img src={NotFoundImg} className='img'/>
                 <div>
-                    <h4>Description</h4>
+                    <h4 className='description-title'>Description</h4>
                     <p className='description'>{description}</p>
                 </div>
             </div> 
             <h2>Credits</h2>
-            {plprogram$credits && plprogram$credits.length > 0 ? (
+            {credits && credits.length > 0 ? (
                 <ul>
-                    {plprogram$credits.map((credit, index) => (
+                    {credits.map((credit, index) => (
                         <li key={index}>
                             {credit.plprogram$creditType}: {credit.plprogram$personName}
                         </li>

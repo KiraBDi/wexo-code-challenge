@@ -1,5 +1,6 @@
-import React, {useEffect, useState } from 'react';
-import {Link} from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { WatchListContext } from '../context/WatchListContext';
 import SearchBox from '../SearchBox';
 import './Data.css';
 import ChildrenShowImage from '../../img/childrenShow.png';
@@ -9,17 +10,20 @@ import ChristmasShowImage from '../../img/christmasShow.png';
 import DramaShowImage from '../../img/dramaShow.png';
 import CrimeShowImage from '../../img/crimeShow.png';
 import NotFoundImage from '../../img/notfound.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 
 
-function Series ({data}) {
-
+function Series({ data }) {
+    const { addToWatchList, removeFromWatchList, watchList } = useContext(WatchListContext);
     const [visibleSeries, setVisibleSeries] = useState(4);
     const [series, setSeries] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [selectedGenre, setSelectedGenre] = useState('All');
 
     useEffect(() => {
-        if(data && data.length > 0) {
+        if (data && data.length > 0) {
             setSeries(data);
         } else {
             fetchData();
@@ -27,18 +31,18 @@ function Series ({data}) {
     }, []);
 
     const fetchData = async () => {
-        const API_URL_SERIES = "https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas?form=json&lang=da&byProgramType=series";
-        
+        const API_URL_SERIES = "https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas?form=json&lang=en&byProgramType=series";
+
         try {
             const response = await fetch(API_URL_SERIES);
-            if(!response.ok) {
+            if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
             const data = await response.json();
             setSeries(data.entries || []);
         } catch (error) {
             console.error('Error fetching series data: ', error);
-        }    
+        }
     };
 
     const loadMore = () => {
@@ -68,14 +72,14 @@ function Series ({data}) {
         }
     }
 
-    const filteredSeries = selectedGenre === 'All' 
-    ? series.filter(serie =>
-        serie.title.toLowerCase().includes(searchValue.toLowerCase()))
-    : series.filter(serie =>
-        serie.plprogram$tags.some(tag =>
-            tag.plprogram$title.toLowerCase().includes(selectedGenre.toLowerCase())
-        ) && serie.title.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    const filteredSeries = selectedGenre === 'All'
+        ? series.filter(serie =>
+            serie.title.toLowerCase().includes(searchValue.toLowerCase()))
+        : series.filter(serie =>
+            serie.plprogram$tags.some(tag =>
+                tag.plprogram$title.toLowerCase().includes(selectedGenre.toLowerCase())
+            ) && serie.title.toLowerCase().includes(searchValue.toLowerCase())
+        );
 
     function extractSerieId(serieUrl) {
         const parts = serieUrl.split('/');
@@ -97,25 +101,39 @@ function Series ({data}) {
                         <option value='Drama shows'>Drama</option>
                     </select>
                 </div>
-            <div className='search-box'>
-                <SearchBox searchValue={searchValue} setSearchValue={setSearchValue}/>
-            </div>
+                <div className='search-box'>
+                    <SearchBox searchValue={searchValue} setSearchValue={setSearchValue} />
+                </div>
             </div>
             <div className='item-card'>
-            {filteredSeries.slice(0, visibleSeries).map((serie, index) => (
-                <div key={index} className='item'>
-                    <Link to={`/Serie/${extractSerieId(serie.id)}`}>
-                        <img className='item-image' src={getGenreImage(selectedGenre)} alt="Show"/>
-                    </Link>
-                    <h6 className='item-title'>{serie.title}</h6>
-                </div>
-            ))}
+                {filteredSeries.slice(0, visibleSeries).map((serie, index) => (
+                    <div key={index} className='item'>
+                        <Link to={`/Serie/${extractSerieId(serie.id)}`}>
+                            <img className='item-image' src={getGenreImage(selectedGenre)} alt="Show" />
+                        </Link>
+                        <h6 className='item-title'>{serie.title}</h6>
+                        {watchList.some(item => item.id === serie.id) ? (
+                            <FontAwesomeIcon
+                                icon={solidHeart}
+                                className='heart-icon'
+                                onClick={() => removeFromWatchList(serie.id)}
+                            />
+                        ) : (
+                            //If the heart is not solid, the movie can be added to the watchlist
+                            <FontAwesomeIcon
+                                icon={regularHeart}
+                                className='heart-icon'
+                                onClick={() => addToWatchList(serie)}
+                            />
+                        )}
+                    </div>
+                ))}
             </div>
             <div className='amount-button'>
-            <p className='item-amount'>Number of series available: {filteredSeries.length}</p>
-            {visibleSeries < series.length && (
-                <button className="load-btn" onClick={loadMore}>Load more</button>
-            )}
+                <p className='item-amount'>Number of series available: {filteredSeries.length}</p>
+                {visibleSeries < series.length && (
+                    <button className="load-btn" onClick={loadMore}>Load more</button>
+                )}
             </div>
         </div>
     )
