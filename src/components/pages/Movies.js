@@ -34,8 +34,7 @@ function Movies({ data }) {
     and if not, then fetch the requested genre */
 
     const fetchData = async () => {
-        let API_URL_MOVIES = "https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas?form=json&lang=da&byProgramType=movie&fields=title";
-
+        let API_URL_MOVIES = "https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas?form=json&lang=da&byProgramType=movie";
         if (selectedGenre !== 'All') {
             API_URL_MOVIES += `&byTags=genre:${selectedGenre}`;
         }
@@ -46,7 +45,11 @@ function Movies({ data }) {
                 throw new Error('Failed to fetch data');
             }
             const data = await response.json();
-            setMovies(data.entries || []);
+            const filteredData = data.entries.map(movie => ({
+                id: movie.id,
+                title: movie.title,
+            }))
+            setMovies(filteredData || []);
         } catch (error) {
             console.error('Error fetching movies data: ', error);
         }
@@ -83,7 +86,11 @@ function Movies({ data }) {
         }
     }
     
-    
+    /* Extracts the numeric part of the id */
+    const extractMovieId = (id) => {
+        const parts = id.split('/');
+        return parts[parts.length - 1];
+    }
 
     const filteredMovies = selectedGenre === 'All'
         ? movies.filter(movie => movie.title.toLowerCase().includes(searchValue.toLowerCase()))
@@ -115,7 +122,7 @@ function Movies({ data }) {
             <div className='item-card'>
                 {filteredMovies.slice(0, visibleMovies).map((movie, index) => (
                     <div key={index} className='item'>
-                        <Link to={`/movie/${movie.id}`}>
+                        <Link to={`/Movie/${extractMovieId(movie.id)}`}>
                         <img className='item-image' src={getGenreImage(selectedGenre)} alt={selectedGenre} />
                         </Link>
                         <h6 className='item-title'>{movie.title}</h6>

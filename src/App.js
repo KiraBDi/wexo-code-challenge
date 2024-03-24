@@ -24,7 +24,7 @@ function App() {
             <Route path='/' element={<Home/>}/>  {/* Handles routing to the Home page, when clicking the logo */}
             <Route path='/Movies' element={<Movies/>} /> {/* Handles routing to the Movies page, when clicking the Movies button */}
             <Route path='/Series' element={<Series/>} /> {/* Handles routing to the Series page, when clicking the Series button */}
-            <Route path='/Movie/:movieId' element={<MovieDetail/>}/> {/* Handles routing to the MovieDetails page, when clicking a movie */}
+            <Route path='/Movie/:movieId' element={<MovieDetail />}/> {/* Handles routing to the MovieDetails page, when clicking a movie */}
             <Route path='/Serie/:serieId' element={<SerieDetails/>}/> {/* Handles routing to the MovieDetails page, when clicking a movie */}
           </Routes>
         </div>

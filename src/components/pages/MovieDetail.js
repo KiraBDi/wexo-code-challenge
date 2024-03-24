@@ -8,6 +8,7 @@ function MovieDetail() {
     const [movieDetails, setMovieDetails] = useState(null);
 
     useEffect(() => {
+        console.log("Movie ID: ", movieId)
         const fetchMovieDetails = async () => {
             try {
                 if (!movieId) {
@@ -19,7 +20,7 @@ function MovieDetail() {
                     });
                     return;
                 }
-                const response = await fetch(`https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas/${movieId}?form=json&fields=title,description,plprogram$credits`);
+                const response = await fetch(`https://feed.entertainment.tv.theplatform.eu/f/jGxigC/bb-all-pas/${movieId}?form=json&fields=title,description,plprogram$credits&lang=da`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch movie details');
                 }
@@ -45,7 +46,7 @@ function MovieDetail() {
             <div className='img-description-container'>
                 <img src={NotFoundImg} className='img'/>
                 <div>
-                    <h4>Description:</h4>
+                    <h4>Description</h4>
                     <p className='description'>{description}</p>
                 </div>
             </div> 

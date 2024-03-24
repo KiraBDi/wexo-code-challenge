@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './Details.css';
 import ShowImage from '../../img/show.png';
+import NotFoundImg from '../../img/notfound.png';
 
 function SerieDetails() {
     const { serieId } = useParams();
@@ -32,6 +33,33 @@ function SerieDetails() {
 
     const { title, description, plprogram$credits } = serieDetails;
 
+    const renderCredits = () => {
+        if (plprogram$credits && plprogram$credits.length > 0) {
+            const directors = plprogram$credits.filter(credit => credit.plprogram$creditType === 'director');
+            const actors = plprogram$credits.filter(credit => credit.plprogram$creditType === 'actor');
+
+            return (
+                <div>
+                    <h3>Directors:</h3>
+                    <ul>
+                        {directors.map((director, index) => (
+                            <li key={index}>{director.plprogram$personName}</li>
+                        ))}
+                    </ul>
+
+                    <h3>Actors:</h3>
+                    <ul>
+                        {actors.map((actor, index) => (
+                            <li key={index}>{actor.plprogram$personName}</li>
+                        ))}
+                    </ul>
+                </div>
+            );
+        } else {
+            return <p>No credits available</p>;
+        }
+    };
+
     return (
         <div className='details-container'>
             <h1>{title}</h1>
@@ -43,17 +71,7 @@ function SerieDetails() {
                 </div>
             </div>
             <h2>Credits</h2>
-            {plprogram$credits && plprogram$credits.length > 0 ? (
-                <ul>
-                    {plprogram$credits.map((credit, index) => (
-                        <li key={index}>
-                            {credit.plprogram$creditType}: {credit.plprogram$personName}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No credits available</p>
-            )}
+            {renderCredits()}
         </div>
     );
 }
