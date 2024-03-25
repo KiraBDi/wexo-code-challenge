@@ -13,7 +13,7 @@ function WatchList() {
       <h2>Watch List</h2>
       <div className='item-card'>
         {watchList.map((item, index) => (
-          <div key={index} className='item'>
+          <div key={item.id} className='item'>
               <img className='item-image' src={NotFoundImage} alt='watchlist-img'/>
             <h6 className='item-title'>{item.title}</h6>
             {/* Button that removes the item from the watchlist */}

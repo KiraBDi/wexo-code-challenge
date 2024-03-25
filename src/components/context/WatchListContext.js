@@ -9,9 +9,9 @@ export const WatchListProvider = (props) => {
     setWatchList([...watchList, item]);
   };
 
-  const removeFromWatchList = (index) => {
+  const removeFromWatchList = (id) => {
     const newList = [...watchList];
-    newList.splice(index, 1);
+    newList.splice(id, 1);
     setWatchList(newList);
   };
 
